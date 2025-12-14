@@ -12,6 +12,7 @@ let ten = 10;
 let add = fn(x, y) {
 	x + y;
 };
+
 let result = add(five, ten);
 `
 
@@ -32,8 +33,6 @@ let result = add(five, ten);
 		{token.LET, "let"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.INT, "add"},
-		{token.ASSIGN, "="},
 		{token.FUNCTION, "fn"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
@@ -50,7 +49,7 @@ let result = add(five, ten);
 		{token.LET, "let"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
-		{token.INT, "add"},
+		{token.IDENT, "add"},
 		{token.LPAREN, "("},
 		{token.IDENT, "five"},
 		{token.COMMA, ","},
