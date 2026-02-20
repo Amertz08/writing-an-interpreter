@@ -2,6 +2,7 @@ package lexer
 
 import "writing-an-intrpreter/token"
 
+// Lexer converts a string into a stream of tokens
 type Lexer struct {
 	input        string
 	position     int

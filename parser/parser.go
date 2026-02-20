@@ -12,6 +12,7 @@ type (
 	infixParseFn  func(ast.Expression) ast.Expression
 )
 
+// Parser converts a stream of tokens into an abstract syntax tree (AST)
 type Parser struct {
 	l *lexer.Lexer
 
