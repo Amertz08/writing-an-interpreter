@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 	"writing-an-intrpreter/ast"
 	"writing-an-intrpreter/lexer"
@@ -129,6 +130,44 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+func TestParsingPrefixExpressions(t *testing.T) {
+	prefixTests := []struct {
+		input        string
+		operator     string
+		integerValue int64
+	}{
+		{"!5;", "!", 5},
+		{"-15;", "-", 15},
+	}
+
+	for _, tt := range prefixTests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain 1 statements. got=%d", len(program.Statements))
+		}
+
+		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+		}
+
+		exp, ok := stmt.Expression.(*ast.PrefixExpression)
+		if !ok {
+			t.Fatalf("stmt.Expression is not ast.PrefixExpression. got=%T", stmt.Expression)
+		}
+		if exp.Operator != tt.operator {
+			t.Fatalf("exp.Operator is not '%s'. got=%s", tt.operator, exp.Operator)
+		}
+		if !testIntegerLiteral(t, exp.Right, tt.integerValue) {
+			return
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *Parser) {
 	errors := p.Errors()
 	if len(errors) == 0 {
@@ -160,6 +199,25 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	}
 	if letStmt.Name.TokenLiteral() != name {
 		t.Errorf("s.Statement got %s, want %s", letStmt.Name.TokenLiteral(), name)
+		return false
+	}
+	return true
+}
+
+func testIntegerLiteral(t *testing.T, i ast.Expression, value int64) bool {
+	intLit, ok := i.(*ast.IntegerLiteral)
+	if !ok {
+		t.Errorf("i not ast.IntegerLiteral. got=%T", i)
+		return false
+	}
+
+	if intLit.Value != value {
+		t.Errorf("intLit.Value is %d, want %d", intLit.Value, value)
+		return false
+	}
+
+	if intLit.TokenLiteral() != fmt.Sprintf("%d", value) {
+		t.Errorf("intLit.TokenLiteral is %q, want %d", intLit.TokenLiteral(), value)
 		return false
 	}
 	return true
