@@ -12,12 +12,12 @@ type Node interface {
 
 type Statement interface {
 	Node
-	statementNode()
+	statementNode() // Only exists to indicate that this is a statement node. In practice a no op.
 }
 
 type Expression interface {
 	Node
-	expressionNode()
+	expressionNode() // Only exists to indicate that this is an expression node. In practice a no op.
 }
 
 type Program struct {
@@ -168,3 +168,12 @@ func (ie *InfixExpression) String() string {
 
 	return out.String()
 }
+
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
+func (b *Boolean) expressionNode()      {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.Token.Literal }
