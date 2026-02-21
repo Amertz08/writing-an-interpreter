@@ -7,6 +7,7 @@ type ObjectType string
 const (
 	INTEGER_OBJ ObjectType = "INTEGER"
 	BOOLEAN_OBJ ObjectType = "BOOLEAN"
+	NULL_OBJ    ObjectType = "NULL"
 )
 
 type Object interface {
@@ -30,3 +31,8 @@ type Boolean struct {
 
 func (b *Boolean) Inspect() string  { return fmt.Sprintf("%t", b.Value) }
 func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
+
+type Null struct{}
+
+func (n *Null) Inspect() string  { return "null" }
+func (n *Null) Type() ObjectType { return NULL_OBJ }
