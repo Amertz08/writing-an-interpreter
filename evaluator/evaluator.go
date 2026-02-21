@@ -5,9 +5,11 @@ import (
 	"writing-an-intrpreter/object"
 )
 
+// Predefined objects for performance improvement
 var (
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
+	NULL  = &object.Null{}
 )
 
 func Eval(node ast.Node) object.Object {
