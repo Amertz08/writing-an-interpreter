@@ -156,7 +156,7 @@ return 1;
 		`, "unknown operator: BOOLEAN + BOOLEAN"},
 		{
 			"foobar",
-			"identifier not found: foobar",
+			"identifier is not found: foobar",
 		},
 		{`"Hello" - "World"`, "unknown operator: STRING - STRING"},
 	}
@@ -269,6 +269,34 @@ func TestStringConcatenation(t *testing.T) {
 	}
 	if str.Value != "hello world" {
 		t.Errorf("object.Value is %q, want %q", str.Value, "hello world")
+	}
+}
+
+func TestBuiltinFunctions(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected any
+	}{
+		{"len(\"hello world\")", 11},
+		{"len(\"\")", 0},
+		{"len(1)", "argument to `len` not supported, got INTEGER"},
+		{"len(\"hello\", \"world\")", "wrong number of arguments. got=2, want=1"},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+		case string:
+			errObj, ok := evaluated.(*object.Error)
+			if !ok {
+				t.Fatalf("no error object returned. got=%T(%+v)", evaluated, evaluated)
+			}
+			if errObj.Message != expected {
+				t.Fatalf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
+		}
 	}
 }
 
