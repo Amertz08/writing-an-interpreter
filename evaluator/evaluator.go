@@ -172,7 +172,11 @@ func evalInfixExpression(operator string, left object.Object, right object.Objec
 	}
 }
 
-func evalStringInfixExpression(operator string, left object.Object, right object.Object) object.Object {
+func evalStringInfixExpression(
+	operator string,
+	left object.Object,
+	right object.Object,
+) object.Object {
 	// TODO: add support for other operators == and !=
 	if operator != "+" {
 		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
